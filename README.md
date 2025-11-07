@@ -1,9 +1,3 @@
-# Proyecto-de-Desarrollo-de-un-LMS
+# HOLA MUNDOOOOOOOOOOOOOO!
 
-Autor: Andres felipe Navas ALvear
-
-
-
-## link de acceso rapido ala pagina
-
-paguina web [pagina ](https://vocal-pavlova-0ce9b1.netlify.app/)
+ESTA SESION ES UN APARTADO DONDE LE HAGO MODIFICASIONES A EL CODIGO PERO SIN AFECTAR A EL CODIGO ES SOLO PRUEBAS QUE PUEDESN SER SERIAS Y/O XD  SOLO PARA PRUEBAS DE COMPRESION DE EL CODIGO   ASI QUE NO TOMAR EN SERIO NADA DE LO QUE SE HACE EN ESTE APARTADO
