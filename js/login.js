@@ -24,7 +24,7 @@ let intentosFallidos = 0;
  * - Si hay 3 errores seguidos → evento especial
  */
 document.getElementById("loginBtn").addEventListener("click", () => {
-  console.log("🔎 Intentando iniciar sesión...");
+  console.log(" Intentando iniciar sesión...");
 
   // Leer los valores del formulario
   const email = document.getElementById("email").value.trim();
@@ -41,7 +41,7 @@ document.getElementById("loginBtn").addEventListener("click", () => {
 
   // Verificar resultado
   if (administrador) {
-    console.log("✅ Inicio de sesión correcto");
+    console.log(" Inicio de sesión correcto");
     intentosFallidos = 0; // reiniciar contador
     localStorage.setItem("usuarioActivo", JSON.stringify(administrador));
 
@@ -70,8 +70,7 @@ document.getElementById("loginBtn").addEventListener("click", () => {
 });
 
 /**
- * 🎭 Función secreta (el meme del error)
- * Reemplaza el contenido del loginBox por la imagen de fallo.
+ * 🎭 Función secreta
  */
 function mostrarEvento(loginBox) {
   console.log("🤣 Mostrando meme por fallar 3 veces...");
