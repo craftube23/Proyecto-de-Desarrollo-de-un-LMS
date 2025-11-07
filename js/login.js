@@ -6,10 +6,10 @@ console.log("correo: admin@campus.com , contraseña: 12345");
 
 // Creamos el usuario administrador si no existe
 if (!localStorage.getItem("administradores")) {
-    const administradores = [
+    const administrators = [
     { email: "admin@campus.com", password: "12345", nombre: "Administrador Principal" }
     ];
-    localStorage.setItem("administradores", JSON.stringify(administradores));
+    localStorage.setItem("administradores", JSON.stringify(administrators));
 }
 
 /**
@@ -22,14 +22,14 @@ document.getElementById("loginBtn").addEventListener("click", () => {
     const password = document.getElementById("password").value.trim();
     const errorMsg = document.getElementById("errorMsg");
 
-    const administradores = JSON.parse(localStorage.getItem("administradores")) || [];
-    const administrador = administradores.find(u => u.email === email && u.password === password);
+    const administrators = JSON.parse(localStorage.getItem("administradores")) || [];
+    const administrator = administrators.find(u => u.email === email && u.password === password);
 
-    if (administrador) {
+    if (administrator) {
     
     // Guardamos el usuario activo
     
-    localStorage.setItem("usuarioActivo", JSON.stringify(administrador));
+    localStorage.setItem("usuarioActivo", JSON.stringify(administrator));
 
     // Redirigir al panel del administrador
     
@@ -39,3 +39,5 @@ document.getElementById("loginBtn").addEventListener("click", () => {
     errorMsg.style.display = "block";
     }
 });
+
+// sesion / local investigar 
