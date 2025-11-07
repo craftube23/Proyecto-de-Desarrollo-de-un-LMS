@@ -1,13 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel LMS</title>
+  <link rel="stylesheet" href="/css/admin.css">
+
 </head>
 <body>
+
+  <div class="panel">
+
+    <div class="panel-header">
+
+      <h3 id="welcomeMsg">Bienvenido</h3>
+      <button id="logoutBtn">Cerrar sesión</button>
+
+    </div>
+
+    <hr>
+
+    <div class="stats">
+
+      <p>📚 <b>Cursos activos:</b> <span id="numCursos">0</span></p>
+      <p>👤 <b>Rol:</b> Administrador</p>
+      <p>🕒 <b>Último acceso:</b> <span id="fechaAcceso"></span></p>
     
-    <h1> soy el administrador</h1>
+    </div>
+  
+  </div>
+
+  <footer>© 2025 Campus LMS — Modo administrador</footer>
+
 
 </body>
 </html>

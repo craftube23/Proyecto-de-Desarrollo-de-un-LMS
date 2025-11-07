@@ -1,0 +1,114 @@
+body {
+
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #0a0a0a, #1c1c1c);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 40px 20px;
+    
+}
+
+    /* --- Contenedor principal --- */
+.panel {
+
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px 40px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.08);
+    animation: fadeIn 0.8s ease-out;
+    
+}
+
+@keyframes fadeIn {
+    
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+    
+}
+
+    /* --- Encabezado --- */
+.panel-header {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    
+}
+
+.panel-header h3 {
+
+    margin: 0;
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+    color: #00ffd5;
+    text-shadow: 0 0 10px #00ffd5;
+    
+}
+
+button {
+
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: 0.3s;
+    
+}
+
+button:hover {
+    
+    background-color: #ff6666;
+    transform: scale(1.05);
+    
+}
+
+hr {
+    
+    border: none;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 20px 0;
+    
+}
+
+    /* --- Contenido --- */
+.stats {
+    
+    text-align: left;
+    
+}
+
+.stats p {
+    
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    
+}
+
+.stats span {
+    
+    color: #00ffd5;
+    font-weight: bold;
+    
+}
+
+    /* --- Footer pequeño --- */
+footer {
+    
+    margin-top: 40px;
+    font-size: 0.85rem;
+    opacity: 0.6;
+    
+}
