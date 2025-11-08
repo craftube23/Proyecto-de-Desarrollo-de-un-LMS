@@ -36,6 +36,10 @@ class UserCard extends HTMLElement {
         <div class="item">Elemento 2</div>
         <div class="item">Elemento 3</div>
     </div>
+
+    <div class="grid-2">
+        
+    </div>
     `;
     
 }

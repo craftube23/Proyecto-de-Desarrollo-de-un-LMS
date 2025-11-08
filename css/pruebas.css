@@ -1,14 +1,7 @@
-export class Admin extends HTMLElement {
-constructor() {
-    super();
-    this.attachShadow({ mode: "open" });
-
-    // Un único innerHTML con estilos y estructura.
-    this.shadowRoot.innerHTML = `
-    <style>
-        :host {
+body {
             
             display: block;
+            padding: 0;
             font-family: "Poppins", sans-serif;
             color: #fff;
             min-height: 100vh;
@@ -108,7 +101,7 @@ constructor() {
             color: #00ffd5;
             font-weight: bold;
             margin: 20px;
-            animation: fadeIn 0.8s ease-out;
+            animation: fadeIn2 5s ease-out;
         }
         
         .item {
@@ -119,77 +112,9 @@ constructor() {
             border: 1px solid #888;
         }
         
-        @keyframes  {
+        @keyframes fadeIn2 {
         
-            from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from { opacity: 1; transform: translateY(-30px); }
+            to   { opacity: 0; transform: translateY(0); }
         
         }
-
-    </style>
-
-    <div class="panel">
-        <div class="panel-header">
-            <h3 id="welcomeMsg">Bienvenido</h3>
-            <button id="logoutBtn">Cerrar sesión</button>
-        </div>
-
-        <hr>
-
-        <div class="stats">
-            <p>📚 <b>Cursos activos:</b> <span id="numCursos">0</span></p>
-            <p>👤 <b>Rol:</b> Administrador</p>
-            <p>🕒 <b>Último acceso:</b> <span id="fechaAcceso">--</span></p>
-        </div>
-
-    </div>
-
-        <div class="grid-1">
-            <div class="item">Elemento 1</div>
-            <div class="item">Elemento 2</div>
-            <div class="item">Elemento 3</div>
-        </div>
-    <div class="small-footer">© 2025 Campus LMS — Modo administrador</div>
-    `;
-}
-
-connectedCallback() {
-    // Inicializaciones seguras aquí.
-    const shadow = this.shadowRoot;
-
-    // Poner fecha de último acceso 
-    const fechaEl = shadow.getElementById("fechaAcceso");
-    if (fechaEl) {
-        const ahora = new Date();
-      // ejemplo con locale ES
-        fechaEl.textContent = ahora.toLocaleString("es-CO");
-    }
-
-    //Simular número de cursos 
-    const numCursosEl = shadow.getElementById("numCursos");
-    if (numCursosEl) numCursosEl.textContent = "6";
-
-    // Añadir listener al botón de logout
-    const logoutBtn = shadow.getElementById("logoutBtn");
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", () => {
-        //  mostrar alerta y actualizar texto
-        alert("Sesión cerrada");
-        // podrías despachar un evento para la app:
-        this.dispatchEvent(new CustomEvent("admin-logout", { bubbles: true, composed: true }));
-        window.location.href = "login.html";
-    });
-    }
-
-    //  personalizar el saludo por atributo:
-    const welcome = shadow.getElementById("welcomeMsg");
-    const nombre = this.getAttribute("name") || "Administrador";
-    if (welcome) welcome.textContent = `Bienvenido, ${nombre}`;
-}
-
-disconnectedCallback() {
-    // limpia listeners si añadiste globales (aquí no hay)
-    }
-}
-
-customElements.define("admin-card", Admin);
