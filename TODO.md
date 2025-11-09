@@ -80,7 +80,7 @@ lms-mvp/
 ### 5.1 Obligatorias (MVP)
 
 * [X]  **Inicializar proyecto y repo en GitHub** (crear README básico).
-* [ ]  **Estructura de carpetas** y archivos base (index.html, admin.html, login.html, css, js).
+* [X]  **Estructura de carpetas** y archivos base (index.html, admin.html, login.html, css, js).
 * [X]  **Storage wrapper** (`storage.js`) con funciones: `get(key)`, `set(key, value)`, `remove(key)`, `seedDefaultData()`.
 * [ ]  **Auth** (`auth.js`): login por email+password, validación básica, persistir estado en `localStorage`.
 * [ ]  **Login UI** (login.html) con mensajes de error.
