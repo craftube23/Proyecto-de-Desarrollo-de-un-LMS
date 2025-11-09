@@ -75,7 +75,6 @@ export class Login extends HTMLElement {
       </div>
     `;
   }
-
   connectedCallback() {
     this.init();
   }
