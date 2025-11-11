@@ -25,10 +25,11 @@ class UserCard extends HTMLElement {
         background: #111;
         display: flex;
         justify-content: center;
-        align-items: baseline;
+        align-items: center;
         gap: 40px;
         padding: 18px;
         box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        flex-wrap: wrap:
     }
 
     nav a {
@@ -36,6 +37,7 @@ class UserCard extends HTMLElement {
         text-decoration: none;
         font-weight: 500;
         transition: color 0.3s;
+        font-size: 1rem;
     }
 
     nav a:hover {
@@ -43,8 +45,11 @@ class UserCard extends HTMLElement {
     }
 
     button {
-        width: 15%;
-        padding: 10px;
+        max-width: 180px;
+        padding: 10px 16px;
+        white-space: nowrap; 
+        overflow: hidden;
+        text-overflow: ellipsis;
         border: none;
         border-radius: 8px;
         background: white;
@@ -53,6 +58,7 @@ class UserCard extends HTMLElement {
         font-weight: bold;
         cursor: pointer;
         transition: background 0.3s, transform 0.1s;
+        flex-shrink: 0; 
     }
 
     button:hover { background: #cce0ff; }
