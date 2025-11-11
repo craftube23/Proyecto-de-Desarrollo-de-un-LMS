@@ -1,15 +1,15 @@
-import "./components/login.css.js";
+// Importamos los componentes
+import "./components/inicio.js";
+import "./components/login.js";
+import "./components/admin.js";
 
+
+// =====================================================
+// Aplicación principal
+// =====================================================
 const app = document.querySelector("#app");
 
-// Mostrar login al inicio
-const login = document.createElement("login-style");
-app.appendChild(login);
+// Mostrar el login al inicio
+app.innerHTML = "<user-card></user-card>";
 
-// Escuchar evento de éxito
-login.addEventListener("login-success", (e) => {
 
-    console.log("Usuario logueado:", e.detail.nombre);
-    app.innerHTM = alert("biembenido administrador");
-
-});

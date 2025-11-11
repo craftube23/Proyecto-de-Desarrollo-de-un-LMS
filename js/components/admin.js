@@ -1,0 +1,499 @@
+//-------------------------------------------------
+// COMPONENTE 2 : <app-admin>
+// Panel  de el administrador
+//-------------------------------------------------
+
+class AppAdmin extends HTMLElement {
+    constructor(){
+        super();
+        this.attachShadow({ mode: "open" });
+    }
+
+    connectedCallback() {
+    this.render();
+    }
+
+    render(){
+        this.shadowRoot.innerHTML = `
+        <style>
+        :host {
+            display: block;
+            font-family: "Poppins", sans-serif;
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #0a0a0a, #1c1c1c);
+        }
+        .panel {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px 40px;
+            width: 90%;
+            max-width: 900px;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.08);
+            animation: fadeIn 0.8s ease-out;
+            margin: 0 auto;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .panel-header { 
+            display:flex; 
+            justify-content:space-between; 
+            align-items:center; 
+            margin-bottom:20px; 
+        }
+        .panel-header h3 {  
+            margin:0; 
+            font-size:1.4rem; 
+            color:#00ffd5; 
+            text-shadow:0 0 8px #00ffd5; 
+        }
+        button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor:pointer;
+            transition:0.22s;
+        }
+        button:hover:not(:disabled) { 
+            transform:scale(1.03); 
+            background:#ff6666; 
+        }
+        button:disabled { 
+            background:#666; 
+            cursor:not-allowed; 
+            opacity:0.6; 
+        }
+        hr { 
+            border:none; 
+            height:1px; 
+            background:rgba(255,255,255,0.08); 
+            margin:20px 0; 
+        }
+        .grid-1 {
+            display:grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap:20px;
+            margin-top:20px;
+        }
+
+        .item {
+            background:#444;
+            padding:18px;
+            text-align:center;
+            border-radius:8px;
+            border:1px solid #666;
+            cursor:pointer;
+        }
+
+        .item:hover {
+            transform:translateY(-4px);
+            box-shadow:0 6px 14px rgba(0,0,0,0.4);
+        }
+        
+        .section-panel {
+            display:none;
+            margin-top:30px;
+            background: rgba(255,255,255,0.03);
+            border-radius:10px;
+            padding:16px;
+        }
+        
+        .course-grid, .teacher-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .card {
+            background: rgba(0,0,0,0.35);
+            border: 1px solid rgba(0,255,213,0.12);
+            border-radius: 10px;
+            padding: 12px;
+            transition: transform .22s ease, box-shadow .22s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.45);
+        }
+
+        .field { 
+            display:flex; 
+            align-items:center; 
+            gap:8px; 
+            justify-content:space-between;
+        }
+        .lbl { 
+            width: 30%; 
+            font-size: 0.9rem; 
+            opacity: 0.9; 
+            text-align:left; 
+        }
+
+        .card input, .card textarea, .card select {
+            width: 68%;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 0.98rem;
+            padding: 6px 8px;
+            border-bottom: 1px solid transparent;
+            outline: none;
+            resize: none;
+        }
+
+        .card.editing input, .card.editing textarea, .card.editing select { 
+            border-bottom: 1px solid #00ffd5; 
+        }
+
+        .card img.preview {
+            width:100%;
+            height:100px;
+            object-fit:cover;
+            border-radius:6px;
+            border:1px solid rgba(255,255,255,0.1);
+        }
+
+        .card-actions { 
+            display:flex; 
+            gap:8px; justify-content:center; 
+        }
+        .card-actions button { 
+            display:none; 
+            padding:6px 10px; 
+            border-radius:8px; 
+        }
+        .card.editing .card-actions button { display:inline-block; }
+
+        .delete { background:#ff4d4d; color:white; }
+        .edit { background:#00ffd5; color:black; }
+
+        .controls { 
+            display:none; 
+            margin-top:16px; 
+            justify-content:space-between; 
+        }
+        .controls.visible { display:flex; }
+        .controls button { 
+            background:#00ffd5; 
+            color:black; 
+            padding:10px 14px; 
+            border-radius:8px; 
+        }
+
+        .small-footer { 
+            margin-top:28px; 
+            font-size:0.85rem; 
+            opacity:0.8; 
+            text-align:center; 
+        }
+    </style>
+        <div class="panel">
+            <div class="panel-header">
+                <h3 id="welcomeMsg">Bienvenido</h3>
+                <button id="logoutBtn">Cerrar sesión</button>
+            </div>
+            <hr>
+            <div class="stats">
+                <p>📚 <b>Cursos activos:</b> <span id="numCursos">0</span></p>
+                <p>👤 <b>Rol:</b> Administrador</p>
+                <p>🕒 <b>Último acceso:</b> <span id="fechaAcceso">--</span></p>
+            </div>
+        </div>
+
+        <div class="grid-1">
+            <div class="item" id="verCursosBtn">Cursos activos ✅</div>
+            <div class="item" id="verModulosBtn">Modulos ✏ </div>
+            <div class="item" id="verDocentesBtn">Docentes activos 👨‍🏫</div>
+            <div class="item" id="editarCursosBtn">Editar 📝</div>
+        </div>
+
+        <!-- Panel de Cursos -->
+        <div class="section-panel" id="coursesPanel">
+            <h4>📚 Lista de Cursos</h4>
+        <div class="course-grid" id="courseGrid"></div>
+            
+            <div class="controls" id="controlsCursos">
+                <button id="addCourse">➕ Agregar Curso</button>
+                <button id="saveCourses">💾 Guardar Cambios</button>
+            </div>
+
+        </div>
+
+        <!-- Panel de Docentes -->
+        <div class="section-panel" id="teachersPanel">
+            <h4>👨‍🏫 Lista de Docentes</h4>
+            <div class="teacher-grid" id="teacherGrid"></div>
+            
+            <div class="controls" id="controlsDocentes">
+                <button id="addTeacher">➕ Agregar Docente</button>
+                <button id="saveTeachers">💾 Guardar Cambios</button>
+            </div>
+
+        </div>
+        <div class="small-footer">© 2025 Campus LMS — Modo administrador</div>
+        `;
+    
+
+        // palabra clave
+        const s = this.shadowRoot; 
+        //fecha de ultimo ingreso
+        const fecha = new Date().toLocaleString("es-CO");
+        this.shadowRoot.querySelector("#fechaAcceso").textContent = fecha;
+        
+        //boton serrar secion
+        const BtnLogout = this.shadowRoot.querySelector("#logoutBtn");
+        BtnLogout.addEventListener ("click", () => {
+            document.querySelector("#app").innerHTML = "<user-card></user-card>";    
+        });
+
+        // -- referencias principales --
+        this._verCursos = s.getElementById("verCursosBtn");
+        this._editarCursos = s.getElementById("editarCursosBtn");
+        this._verDocentes = s.getElementById("verDocentesBtn");
+
+        this._panelCursos = s.getElementById("coursesPanel");
+        this._panelDocentes = s.getElementById("teachersPanel");
+
+        this._gridCursos = s.getElementById("courseGrid");
+        this._gridDocentes = s.getElementById("teacherGrid");
+
+        this._controlsCursos = s.getElementById("controlsCursos");
+        this._controlsDocentes = s.getElementById("controlsDocentes");
+
+        // --- Botones ---
+        this._addCourse = s.getElementById("addCourse");
+        this._saveCourses = s.getElementById("saveCourses");
+        this._addTeacher = s.getElementById("addTeacher");
+        this._saveTeachers = s.getElementById("saveTeachers");
+
+
+        // -- Inicializacion si no hay datos en el localstorange --
+        // docentes
+        if (!localStorage.getItem("docentes")) {
+            localStorage.setItem("docentes", JSON.stringify([
+                { nombre: "Rosa", clave: "ROS23", materia: "Biologia", imagen: "" },
+                { nombre: "Melano", clave: "ANO23", materia: "sociales", imagen: "" }
+            ]));
+        }
+        // cursos
+        if (!localStorage.getItem("cursos")){
+            localStorage.setItem("cursos", JSON.stringify([
+                { nombre: "Álgebra", clave: "MAT01", descripcion: "Ecuaciones y funciones", imagen: "", docente: "" },
+                { nombre: "Historia Universal", clave: "HIS01", descripcion: "Desde la Edad Antigua", imagen: "", docente: "" }
+            ]));
+        }
+        // -- Mostrar --
+        // ver cusos 
+        this._verCursos.addEventListener ("click", () =>{
+
+            this._panelCursos.style.display = "block";
+            this._panelDocentes.style.display = "none";
+            this.mostrarCursos();
+
+        });
+
+        // ver Docentes 
+        this._verDocentes.addEventListener ("click", () => {
+
+            this._panelDocentes.style.display = "block";
+            this._panelCursos.style.display = "none";
+            this.mostrarDocentes();
+
+        });
+
+        this._editarCursos.addEventListener("click", () => {
+            this._editing = !this._editing;
+            this._applyEditMode();
+        });
+
+        // -- Agregar / guardar  cursos--
+        // agregar curso
+        this._addCourse.addEventListener("click", () =>{
+            const cursos = this.obtener("cursos");
+            cursos.push({ nombre: "Nuevo Curso", clave: "CURSO" + (cursos.length + 1), descripcion: "", imagen: "",  docente: "" });
+            this.guardar("cursos", cursos);
+            this.mostrarCursos();
+        })
+        // guardar  cursos
+        this._saveCourses.addEventListener("click", () => this.guardarCambiosCursos());
+
+        // -- Agregar / guardar Docentes --
+        // Agregar Docentes 
+        this._addTeacher.addEventListener("click", () => {
+            const docentes = this.obtener("docentes");
+            docentes.push({ nombre: "Nuevo Docente", materia: "", image : "" });
+            this.guardar("docentes", docentes);
+            this.mostrarDocentes();
+        });
+
+        // Guardar Docentes
+        this._saveTeachers.addEventListener("click", () => this.guardarCambiosDocentes());
+
+    }
+
+        // funciones utilis
+        obtener(tipo) { return JSON.parse(localStorage.getItem(tipo)) || []; }
+        guardar(tipo, data) { localStorage.setItem(tipo, JSON.stringify(data));}
+
+        _applyEditMode() {
+            const allCards = this.shadowRoot.querySelectorAll(".card");
+            allCards.forEach(c => {
+                c.classList.toggle("editing", this._editing);
+                c.querySelectorAll("input, textarea, select").forEach(i => i.readOnly = !this._editing);
+        });
+
+        this._controlsCursos.classList.toggle("visible", this._editing);
+        this._controlsDocentes.classList.toggle("visible", this._editing);
+}
+
+
+
+    
+    //mostra y diseñar 
+    // Docentes
+    mostrarDocentes() {
+        const docentes = this.obtener("docentes");
+        this._gridDocentes.innerHTML = "";
+
+    docentes.forEach((docente, i) => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+    card.innerHTML = `
+        <div class="field"><span class="lbl">Nombre</span><input value="${docente.nombre}" class="nombre" readonly></div>
+        <div class="field"><span class="lbl">Materia</span><input value="${docente.materia}" class="materia" readonly></div>
+        
+        <div class="field"><span class="lbl">Imagen</span>
+            <img class="preview" src="${docente.imagen || "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"}">
+            <input type="file" accept="image/*" class="fileInput" style="display:none">
+        </div>
+        
+        <div class="card-actions">
+            <button class="edit">Editar</button>
+            <button class="delete">Eliminar</button>
+        </div>
+    `;
+
+    const fileInput = card.querySelector(".fileInput");
+    const preview = card.querySelector(".preview");
+    preview.addEventListener("click", () => { if (this._editing) fileInput.click(); });
+    fileInput.addEventListener("change", e => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => preview.src = reader.result;
+            reader.readAsDataURL(file);
+        }
+    });
+
+    card.querySelector(".delete").addEventListener("click", () => {
+        const lista = this.obtener("docentes");
+        lista.splice(i, 1);
+        this.guardar("docentes", lista);
+        this.mostrarDocentes();
+    });
+
+    this._gridDocentes.appendChild(card);
+    });
+}
+
+guardarCambiosDocentes() {
+    const tarjetas = this._gridDocentes.querySelectorAll(".card");
+    const nuevos = Array.from(tarjetas).map(c => ({
+        nombre: c.querySelector(".nombre").value,
+        materia: c.querySelector(".materia").value,
+        imagen: c.querySelector(".preview").src
+    }));
+    this.guardar("docentes", nuevos);
+    alert("Docentes guardados ✅");
+}
+
+    // Cursos
+        mostrarCursos(){
+            const cursos = this.obtener("cursos");
+            const docentes = this.obtener("docentes");
+            this._gridCursos.innerHTML = "";
+
+            cursos.forEach((curso, i) => {
+                const card = document.createElement("div");
+                card.className = "card";
+
+                //lista de docentes
+                const opciones = docentes.map(d => `
+                    <option value="${d.nombre}" ${d.nombre === curso.docente ? "selected" : ""}>${d.nombre}</option>`).join("");
+            
+                    card.innerHTML = `
+                <style>
+                .field select {
+                    background: #fff;
+                    color: #000;
+                    border-radius: 6px;
+                }
+                </style>
+                    <div class="field"><span class="lbl">Nombre</span><input class="nombre" value="${curso.nombre}" readonly></div>
+                    <div class="field"><span class="lbl">Clave</span><input class="clave" value="${curso.clave}" readonly></div>
+                    <div class="field"><span class="lbl">Descripción</span><textarea class="descripcion" rows="2" readonly>${curso.descripcion}</textarea></div>
+                    <div class="field"><span class="lbl">Docente</span><select class="docente">${opciones}</select></div>
+                    
+                    <div class="field"><span class="lbl">Imagen</span>
+                        <img class="preview" src="${curso.imagen || "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"}">
+                        <input type="file" accept="image/*" class="fileInput" style="display:none">
+                    </div>
+
+                    <div class="card-actions">
+                        <button class="edit">Editar</button>
+                        <button class="delete">Eliminar</button>
+                    </div>
+                `;
+
+                const fileInput = card.querySelector(".fileInput");
+                const preview = card.querySelector(".preview");
+                preview.addEventListener("click", () => { if (this._editing) fileInput.click();});
+                fileInput.addEventListener("change", e => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = () => preview.src = reader.result;
+                        reader.readAsDataURL(file);
+                    } 
+                });
+
+                card.querySelector(".delete").addEventListener("click", () => {
+                    const lista = this.obtener("cursos");
+                    lista.splice(i, 1);
+                    this.guardar("cursos", lista);
+                    this.mostrarCursos();
+                });
+                
+                this._gridCursos.appendChild(card);
+            });
+
+            this.shadowRoot.getElementById("numCursos").textContent = cursos.length;
+        }
+        guardarCambiosCursos() {
+            const tarjetas = this._gridCursos.querySelectorAll(".card");
+            const nuevos = Array.from(tarjetas).map(c => ({
+            nombre: c.querySelector(".nombre").value,
+            clave: c.querySelector(".clave").value,
+            descripcion: c.querySelector(".descripcion").value,
+            docente: c.querySelector(".docente").value,
+            imagen: c.querySelector(".preview").src
+        }));
+        
+        this.guardar("cursos", nuevos);
+        alert("Cursos guardados ✅");
+    }
+}
+
+customElements.define("app-admin", AppAdmin);
