@@ -30,27 +30,42 @@ render() {
             backdrop-filter: blur(10px);
             padding: 2rem;
             border-radius: 15px;
-            width: 320px;
+            width: 90%;
+            max-width: 350px;
             text-align: center;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        h3 {
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         input {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
             border: none;
             border-radius: 8px;
             background: rgba(255, 255, 255, 0.2);
             color: white;
             font-size: 1rem;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.02);
         }
 
         input::placeholder {    color: rgba(255,255,255,0.7);   }
 
         button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: none;
             border-radius: 8px;
             background: white;
@@ -68,6 +83,45 @@ render() {
             display: none;
             color: #ff5c5c;
             margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* 📱 Responsividad */
+            @media (max-width: 768px) {
+            :host {
+                background: linear-gradient(160deg, #004080, #0099cc);
+                padding: 1rem;
+            }
+
+            .login-box {
+                width: 100%;
+                max-width: 320px;
+                padding: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+            }
+
+            input, button {
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-box {
+                border-radius: 10px;
+                padding: 1rem;
+            }
+
+            h3 {
+                font-size: 1rem;
+            }
+
+            input, button {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
         }
     </style>
 

@@ -43,13 +43,15 @@ class AppAdmin extends HTMLElement {
             display:flex; 
             justify-content:space-between; 
             align-items:center; 
+            flex-wrap: wrap;
             margin-bottom:20px; 
+            gap: 10px; 
         }
         .panel-header h3 {  
             margin:0; 
             font-size:1.4rem; 
             color:#00ffd5; 
-            text-shadow:0 0 8px #00ffd5; 
+            text-shadow:0 0 8px #00ffd5;
         }
         button {
             background-color: #ff4d4d;
@@ -82,6 +84,14 @@ class AppAdmin extends HTMLElement {
             margin-top:20px;
         }
 
+        @media (max-width: 900px) {
+            .grid-1 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .grid-1 { grid-template-columns: 1fr; }
+        }
+
         .item {
             background:#444;
             padding:18px;
@@ -89,6 +99,7 @@ class AppAdmin extends HTMLElement {
             border-radius:8px;
             border:1px solid #666;
             cursor:pointer;
+            transition: transform .25s ease, box-shadow .25s ease;
         }
 
         .item:hover {
@@ -134,14 +145,14 @@ class AppAdmin extends HTMLElement {
             justify-content:space-between;
         }
         .lbl { 
-            width: 30%; 
+            width: 100%; 
             font-size: 0.9rem; 
             opacity: 0.9; 
             text-align:left; 
         }
 
         .card input, .card textarea, .card select {
-            width: 68%;
+            width: 100%;
             background: transparent;
             border: none;
             color: white;
@@ -182,6 +193,8 @@ class AppAdmin extends HTMLElement {
             display:none; 
             margin-top:16px; 
             justify-content:space-between; 
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .controls.visible { display:flex; }
         .controls button { 
@@ -195,7 +208,20 @@ class AppAdmin extends HTMLElement {
             margin-top:28px; 
             font-size:0.85rem; 
             opacity:0.8; 
-            text-align:center; 
+            text-align:center;  
+        }
+
+        @media (max-width: 480px) {
+            :host {
+                padding: 20px 10px;
+            }
+            .panel {
+                padding: 20px;
+            }
+            button {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
         }
     </style>
         <div class="panel">
