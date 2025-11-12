@@ -222,7 +222,11 @@ class AppAdmin extends HTMLElement {
                 padding: 8px 12px;
                 font-size: 0.9rem;
             }
+        
         }
+        #searchContainer{margin-bottom:10px;}
+        #searchInput{padding:6px;border-radius:6px;border:none;}
+        
     </style>
         <div class="panel">
             <div class="panel-header">
@@ -256,6 +260,16 @@ class AppAdmin extends HTMLElement {
 
         </div>
 
+        <!-- Panel de Módulos (Buscador) -->
+        <div class="section-panel" id="modulosPanel">
+            <h4>✏ Buscar curso por clave</h4>
+            <div id="searchContainer">
+                <input type="text" id="searchInput" placeholder="Ejemplo: MAT01">
+                <button id="searchCourseBtn">Buscar</button>
+            </div>
+            <div class="course-grid" id="moduloGrid"></div>
+        </div>
+
         <!-- Panel de Docentes -->
         <div class="section-panel" id="teachersPanel">
             <h4>👨‍🏫 Lista de Docentes</h4>
@@ -267,6 +281,21 @@ class AppAdmin extends HTMLElement {
             </div>
 
         </div>
+
+        <div class="section-panel" id="modulePanel">
+        <h4>📘 Buscar módulos por curso</h4>
+        <div class="field">
+            <span class="lbl">Clave del curso</span>
+            <input type="text" id="buscarModuloInput" placeholder="Ej: MAT01 o Historia" />
+            <button id="buscarModuloBtn">🔍 Buscar</button>
+        </div>
+            <div class="module-grid" id="moduleGrid"></div>
+            <div class="controls" id="controlsModule">
+                <button id="addModule">➕ Agregar Módulo</button>
+                <button id="saveModules">💾 Guardar Cambios</button>
+            </div>
+        </div>
+
         <div class="small-footer">© 2025 Campus LMS — Modo administrador</div>
         `;
     
@@ -287,12 +316,15 @@ class AppAdmin extends HTMLElement {
         this._verCursos = s.getElementById("verCursosBtn");
         this._editarCursos = s.getElementById("editarCursosBtn");
         this._verDocentes = s.getElementById("verDocentesBtn");
+        this._verModulos = s.getElementById("verModulosBtn");
 
         this._panelCursos = s.getElementById("coursesPanel");
         this._panelDocentes = s.getElementById("teachersPanel");
+        this._panelModulos = s.getElementById("modulosPanel");
 
         this._gridCursos = s.getElementById("courseGrid");
         this._gridDocentes = s.getElementById("teacherGrid");
+        this._gridModulos = s.getElementById("moduloGrid");
 
         this._controlsCursos = s.getElementById("controlsCursos");
         this._controlsDocentes = s.getElementById("controlsDocentes");
@@ -302,6 +334,11 @@ class AppAdmin extends HTMLElement {
         this._saveCourses = s.getElementById("saveCourses");
         this._addTeacher = s.getElementById("addTeacher");
         this._saveTeachers = s.getElementById("saveTeachers");
+
+        // Buscador (solo en panel de módulos)
+        this._searchInput = s.getElementById("searchInput");
+        this._searchCourseBtn = s.getElementById("searchCourseBtn");
+        this._searchCourseBtn.addEventListener("click", () => this.buscarCursoPorClave());
 
 
         // -- Inicializacion si no hay datos en el localstorange --
@@ -325,6 +362,7 @@ class AppAdmin extends HTMLElement {
 
             this._panelCursos.style.display = "block";
             this._panelDocentes.style.display = "none";
+            this._panelModulos.style.display = "none";
             this.mostrarCursos();
 
         });
@@ -333,6 +371,7 @@ class AppAdmin extends HTMLElement {
         this._verDocentes.addEventListener ("click", () => {
 
             this._panelDocentes.style.display = "block";
+            this._panelModulos.style.display = "none";
             this._panelCursos.style.display = "none";
             this.mostrarDocentes();
 
@@ -343,6 +382,13 @@ class AppAdmin extends HTMLElement {
             this._applyEditMode();
         });
 
+        this._verModulos.addEventListener("click", () => {
+            this._panelCursos.style.display = "none";
+            this._panelDocentes.style.display = "none";
+            this._panelModulos.style.display = "block";
+            this._gridModulos.innerHTML = "<p>Ingresa una clave para buscar un curso 🔎</p>";
+        });
+
         // -- Agregar / guardar  cursos--
         // agregar curso
         this._addCourse.addEventListener("click", () =>{
@@ -350,7 +396,7 @@ class AppAdmin extends HTMLElement {
             cursos.push({ nombre: "Nuevo Curso", clave: "CURSO" + (cursos.length + 1), descripcion: "", imagen: "",  docente: "" });
             this.guardar("cursos", cursos);
             this.mostrarCursos();
-        })
+        });
         // guardar  cursos
         this._saveCourses.addEventListener("click", () => this.guardarCambiosCursos());
 
@@ -366,6 +412,32 @@ class AppAdmin extends HTMLElement {
         // Guardar Docentes
         this._saveTeachers.addEventListener("click", () => this.guardarCambiosDocentes());
 
+    }
+
+        // 🔍 Buscar curso por clave (panel de módulos)
+    buscarCursoPorClave() {
+        const claveBuscada = this._searchInput.value.trim();
+        if (!claveBuscada) return alert("Por favor ingresa una clave de curso para buscar.");
+        const cursos = this.obtener("cursos");
+        const curso = cursos.find(c => c.clave.toUpperCase() === claveBuscada.toUpperCase());
+        if (!curso) return alert("No se encontró ningún curso con esa clave.");
+
+        this._gridModulos.innerHTML = "";
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+            <div class="field"><span class="lbl">Nombre</span><input value="${curso.nombre}" readonly></div>
+            <div class="field"><span class="lbl">Clave</span><input value="${curso.clave}" readonly></div>
+            <div class="field"><span class="lbl">Descripción</span><textarea rows="2" readonly>${curso.descripcion}</textarea></div>
+            <div class="field"><span class="lbl">Docente</span><input value="${curso.docente}" readonly></div>
+            <div class="field"><span class="lbl">Imagen</span><img class="preview" src="${curso.imagen || "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"}"></div>
+            <div class="card-actions"><button id="btnVolver">Volver</button></div>
+        `;
+        this._gridModulos.appendChild(card);
+        card.querySelector("#btnVolver").addEventListener("click", () => {
+            this._gridModulos.innerHTML = "<p>Ingresa una clave para buscar un curso 🔎</p>";
+            this._searchInput.value = "";
+        });
     }
 
         // funciones utilis
