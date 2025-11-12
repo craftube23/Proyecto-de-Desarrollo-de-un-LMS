@@ -1,15 +1,14 @@
-
 // -------------------------------------------------
-// COMPONENTE 3: <app-dashboard>
-// Panel principal con navegación a módulos
+// COMPONENTE 3: <user-card>
+// Panel principal con navegación y vista de cursos
 // -------------------------------------------------
 
 class UserCard extends HTMLElement {
     constructor() {
-    super();
-    this.attachShadow({ mode: "open" });
+        super();
+        this.attachShadow({ mode: "open" });
 
-    this.shadowRoot.innerHTML = `
+        this.shadowRoot.innerHTML = `
     <style>
       /* ---------- ESTILOS GENERALES ---------- */
     :host {
@@ -29,7 +28,7 @@ class UserCard extends HTMLElement {
         gap: 40px;
         padding: 18px;
         box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        flex-wrap: wrap:
+        flex-wrap: wrap;
     }
 
     nav a {
@@ -64,8 +63,7 @@ class UserCard extends HTMLElement {
     button:hover { background: #cce0ff; }
     button:active { transform: scale(0.97); }
 
-
-    /* ---------- CONTENEDOR PRINCIPAL ---------- */
+      /* ---------- CONTENEDOR PRINCIPAL ---------- */
     .container {
         padding: 40px 30px;
         max-width: 1200px;
@@ -102,6 +100,7 @@ class UserCard extends HTMLElement {
         overflow: hidden;
         text-align: center;
         transition: transform 0.25s ease, box-shadow 0.25s ease;
+        cursor: pointer;
     }
 
     .card:hover {
@@ -139,6 +138,67 @@ class UserCard extends HTMLElement {
         font-size: 1rem;
         margin-top: 30px;
     }
+
+      /* ---------- MODAL ---------- */
+    .modal {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        z-index: 9999;
+    }
+    .modal.active {
+        visibility: visible;
+        opacity: 1;
+    }
+    .modal-content {
+        background: #111;
+        padding: 20px 30px;
+        border-radius: 12px;
+        max-width: 600px;
+        width: 90%;
+        color: white;
+        box-shadow: 0 0 20px rgba(0,255,213,0.3);
+        animation: popIn 0.4s ease;
+    }
+    @keyframes popIn {
+        from { transform: scale(0.8); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    .modal-content h3 {
+        color: #00ffd5;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    .modulo {
+        background: rgba(255,255,255,0.06);
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    .modulo h4 {
+        margin: 0;
+        color: #00ffd5;
+    }
+    .close-btn {
+        display: block;
+        margin: 20px auto 0;
+        background: #00ffd5;
+        color: black;
+        font-weight: bold;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    .close-btn:hover { background: #0ff; }
     </style>
 
     <!-- ---------- ESTRUCTURA HTML ---------- -->
@@ -152,69 +212,124 @@ class UserCard extends HTMLElement {
         <h2>📚 Cursos Disponibles</h2>
         <div class="grid" id="grid"></div>
 
-    <!-- Mensaje cuando no hay cursos -->
-    <div class="no-cursos" id="mensajeVacio" style="display:none;">
-        No hay cursos disponibles.
+        <div class="no-cursos" id="mensajeVacio" style="display:none;">
+            No hay cursos disponibles.
+        </div>
     </div>
+
+    <!-- ---------- MODAL ---------- -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h3 id="modalTitulo">Módulos del curso</h3>
+            <div id="modalBody"></div>
+            <button class="close-btn" id="cerrarModal">Cerrar</button>
+        </div>
     </div>
     `;
-}
-
-  // ===============================================
-  // Cuando el componente se monta en el DOM
-  // ===============================================
-connectedCallback() {
-    this.mostrarCursos();
-}
-
-  // ===============================================
-  // FUNCIÓN: mostrarCursos()
-  // Muestra nombre, descripción e imagen de los cursos
-  // ===============================================
-mostrarCursos() {
-    const s = this.shadowRoot;
-    const grid = s.getElementById("grid");
-    const mensajeVacio = s.getElementById("mensajeVacio");
-    const loginBtn = s.getElementById("loginBtn")
-
-loginBtn.addEventListener("click", () => {
-    document.querySelector("#app").innerHTML = "<app-login></app-login>"
-});
-    // Obtenemos los cursos del localStorage
-    const cursos = JSON.parse(localStorage.getItem("cursos")) || [];
-
-    // Limpiamos antes de renderizar
-    grid.innerHTML = "";
-
-    // Si no hay cursos, mostramos mensaje
-    if (cursos.length === 0) {
-        mensajeVacio.style.display = "block";
-        return;
     }
 
-    mensajeVacio.style.display = "none";
+    connectedCallback() {
+        this.mostrarCursos();
+    }
 
-    // Recorremos los cursos
-    cursos.forEach(curso => {
-        const card = document.createElement("div");
-        card.className = "card";
+    // ===================================================
+    // FUNCIÓN PRINCIPAL: Mostrar cursos en tarjetas
+    // ===================================================
+    mostrarCursos() {
+        const s = this.shadowRoot;
+        const grid = s.getElementById("grid");
+        const mensajeVacio = s.getElementById("mensajeVacio");
+        const loginBtn = s.getElementById("loginBtn");
+        const modal = s.getElementById("modal");
+        const modalBody = s.getElementById("modalBody");
+        const modalTitulo = s.getElementById("modalTitulo");
+        const cerrarModal = s.getElementById("cerrarModal");
 
-      // Si no hay imagen guardada, ponemos una de relleno
-        const imgSrc = curso.imagen || "https://via.placeholder.com/300x180/00ffd5/000000?text=Sin+Imagen";
-        const descripcion = curso.descripcion || "Sin descripción disponible.";
+        // Botón de login
+        loginBtn.addEventListener("click", () => {
+            document.querySelector("#app").innerHTML = "<app-login></app-login>";
+        });
 
-      // Plantilla visual de cada tarjeta
-    card.innerHTML = `
-        <img src="${imgSrc}" alt="Imagen del curso ${curso.nombre}">
-        <div class="info">
-            <div class="nombre">${curso.nombre}</div>
-            <div class="descripcion">${descripcion}</div>
-        </div>
-    `;
+        // Obtenemos los cursos del localStorage
+        const cursos = JSON.parse(localStorage.getItem("cursos")) || [];
 
-        grid.appendChild(card);
-    });
-}
+        grid.innerHTML = "";
+
+        // Si no hay cursos, mostramos mensaje
+        if (cursos.length === 0) {
+            mensajeVacio.style.display = "block";
+            return;
+        }
+
+        mensajeVacio.style.display = "none";
+
+        // Mostrar cursos como tarjetas
+        cursos.forEach(curso => {
+            const card = document.createElement("div");
+            card.className = "card";
+
+            const imgSrc =
+                curso.imagen ||
+                "https://via.placeholder.com/300x180/00ffd5/000000?text=Sin+Imagen";
+            const descripcion =
+                curso.descripcion || "Sin descripción disponible.";
+
+            card.innerHTML = `
+            <img src="${imgSrc}" alt="Imagen del curso ${curso.nombre}">
+            <div class="info">
+                <div class="nombre">${curso.nombre}</div>
+                <div class="descripcion">${descripcion}</div>
+            </div>
+            `;
+
+            // Cuando se hace clic en un curso → mostrar módulos
+            card.addEventListener("click", () => {
+                this.mostrarModal(curso, modal, modalTitulo, modalBody);
+            });
+
+            grid.appendChild(card);
+        });
+
+        // Cerrar modal
+        cerrarModal.addEventListener("click", () => {
+            modal.classList.remove("active");
+        });
+
+        // También cerrar si se da clic fuera del contenido
+        modal.addEventListener("click", e => {
+            if (e.target === modal) modal.classList.remove("active");
+        });
+    }
+
+    // ===================================================
+    // FUNCIÓN: mostrarModal(curso)
+    // Muestra los módulos del curso dentro de un modal
+    // ===================================================
+    mostrarModal(curso, modal, modalTitulo, modalBody) {
+        modalTitulo.textContent = `📘 Módulos de ${curso.nombre}`;
+        modalBody.innerHTML = "";
+
+        // Si no hay módulos
+        if (!curso.modulos || curso.modulos.length === 0) {
+            modalBody.innerHTML = `
+            <p style="text-align:center; opacity:0.8;">
+            ⚠️ Este curso aún no tiene módulos asignados.
+            </p>`;
+        } else {
+            curso.modulos.forEach((mod, i) => {
+                const div = document.createElement("div");
+                div.className = "modulo";
+                div.innerHTML = `
+            <h4>🧩 ${i + 1}. ${mod.titulo}</h4>
+            <p>${mod.descripcion}</p>
+        `;
+                modalBody.appendChild(div);
+            });
+        }
+
+        // Mostrar modal
+        modal.classList.add("active");
+    }
 }
 
 // Registro del componente
