@@ -204,7 +204,8 @@ class UserCard extends HTMLElement {
     <!-- ---------- ESTRUCTURA HTML ---------- -->
     <nav>
         <a href="#">🏠 Inicio</a>
-        <a href="#">📚 Cursos</a>
+        <a  href="#">📚 profesores</a>
+        <button id="profes" > profes </button>
         <button id="loginBtn">Ingresar</button>     
     </nav>
     
@@ -239,6 +240,7 @@ class UserCard extends HTMLElement {
         const s = this.shadowRoot;
         const grid = s.getElementById("grid");
         const mensajeVacio = s.getElementById("mensajeVacio");
+        const profes = s.getElementById("docentes");
         const loginBtn = s.getElementById("loginBtn");
         const modal = s.getElementById("modal");
         const modalBody = s.getElementById("modalBody");
@@ -252,8 +254,6 @@ class UserCard extends HTMLElement {
 
         // Obtenemos los cursos del localStorage
         const cursos = JSON.parse(localStorage.getItem("cursos")) || [];
-
-        grid.innerHTML = "";
 
         // Si no hay cursos, mostramos mensaje
         if (cursos.length === 0) {
@@ -300,6 +300,27 @@ class UserCard extends HTMLElement {
             if (e.target === modal) modal.classList.remove("active");
         });
     }
+    const docentes = JSON.parse(localStorage.getItem("docentes")) || [];
+
+    grid.innerHTML = "";
+
+
+    profes.addEventListener("click", () =>{ 
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const imgSrc =
+        docente.preview ||
+            "https://via.placeholder.com/300x180/00ffd5/000000?text=Sin+Imagen";
+
+        card.innerHTML = `
+        <img src="${imgSrc}" alt="Imagen del curso ${docente.nombre}">
+        <div class="info">
+            <div class="nombre">${docente.nombre}</div>
+            <div class="descripcion">${docente.materia}</div>
+        </div>
+        `;);
+    
 
     // ===================================================
     // FUNCIÓN: mostrarModal(curso)
