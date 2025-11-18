@@ -134,6 +134,7 @@ render() {
     </div>
     `;
 
+    console.log("email admin@campus.com password 12345");
     //si no hay admin, esta este por defecto
     if (!localStorage.getItem("administrators")){
         const admin = [
